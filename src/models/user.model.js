@@ -42,6 +42,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true,"Password is required"],
     },
+    isProfilePrivate:
+    {
+        type: Boolean,
+        default: true,
+    },
     followers:
     {
         type: [mongoose.Schema.Types.ObjectId],

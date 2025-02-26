@@ -283,6 +283,42 @@ export const updateAccountDetails = asyncHandler(async(req,res)=>{
     }
 })
 
+export const makeProfilePrivate = asyncHandler(async(req,res)=>{
+    try
+    {
+        const id = req?.user?._id;
+        const user = await User
+        .findByIdAndUpdate(id,{
+            $set:
+            {
+                isProfilePrivate: true,
+            }
+        },{new: true}).select("-password -refreshToken");
+    }
+    catch(e)
+    {
+        throw new ApiError(400,e?.message || "Error while making profile private");
+    }
+});
+
+export const makeProfilePublic = asyncHandler(async(req,res)=>{
+    try
+    {
+        const id = req?.user?._id;
+        const user = await User
+        .findByIdAndUpdate(id,{
+            $set:
+            {
+                isProfilePrivate: false,
+            }
+        },{new: true}).select("-password -refreshToken");
+    }
+    catch(e)
+    {
+        throw new ApiError(400,e?.message || "Error while making profile public");
+    }
+});
+
 export const updateUserAvatar = asyncHandler(async(req,res) => {
     try
     {
