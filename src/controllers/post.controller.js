@@ -54,6 +54,66 @@ const createPost = asyncHandler(async (req, res) => {
     }
 });
 
+const makePostArchived = asyncHandler(async (req, res) => {
+    try {
+        const { postId } = req.params;
+        if (!postId) {
+            throw new ApiError(400, "Post Id is required");
+        }
+        const post = await Post.findByIdAndUpdate(
+            new mongoose.Types.ObjectId(postId),
+            { isArchived: true },
+            { new: true }
+        );
+        if (!post) {
+            throw new ApiError(404, "Post not found");
+        }
+        return res
+            .status(200)
+            .json(new ApiResponse(200, post, "Post archived successfully"));
+    } catch (e) {
+        return res
+            .status(e?.status || 500)
+            .json(
+                new ApiResponse(
+                    e?.status || 500,
+                    null,
+                    e?.message || "Internal server error"
+                )
+            );
+    }
+});
+
+const makePostPublic = asyncHandler(async (req, res) => {
+    try {
+        const { postId } = req.params;
+        if (!postId) {
+            throw new ApiError(400, "Post Id is required");
+        }
+        const post = await Post.findByIdAndUpdate(
+            new mongoose.Types.ObjectId(postId),
+            { isArchived: false },
+            { new: true }
+        );
+        if (!post) {
+            throw new ApiError(404, "Post not found");
+        }
+        return res
+            .status(200)
+            .json(new ApiResponse(200, post, "Post made public successfully"));
+    } catch (e) {
+        return res
+            .status(e?.status || 500)
+            .json(
+                new ApiResponse(
+                    e?.status || 500,
+                    null,
+                    e?.message || "Internal server error"
+                )
+            );
+    }
+});
+
 const getPostsByUser = asyncHandler(async (req, res) => {
     try {
         const id = req?.user?._id;
@@ -200,6 +260,8 @@ const deletePost = asyncHandler(async (req, res) => {
 export {
     createPost,
     getPostsByUser,
+    makePostArchived,
+    makePostPublic,
     getPosts,
     getPostById,
     updateCaption,

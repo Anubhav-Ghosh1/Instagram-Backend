@@ -33,6 +33,10 @@ const postSchema = new monoogse.Schema(
             type: Number,
             default: 0,
         },
+        isArchived: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );
